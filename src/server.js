@@ -26,7 +26,7 @@ server.post('/', (req, res) => {
 
     // Initialize Alexa SDK
     const alexa = Alexa.handler(req.body, context);
-    alexa.registerHandlers(handlers.newSessionHandlers);
+    alexa.registerHandlers(handlers.newSessionHandlers, handlers.startGameHandlers, handlers.guessModeHandlers, handlers.guessAttemptHandlers);
     alexa.execute();
 });
 
