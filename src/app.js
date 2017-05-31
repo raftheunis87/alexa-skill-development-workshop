@@ -1,6 +1,6 @@
 const WELCOME_MESSAGE = 'Hello World!';
 
-const handlers = {
+module.exports.handlers = {
     LaunchRequest() {
         this.emitWithState('Start');
     },
@@ -8,5 +8,3 @@ const handlers = {
         this.emit(':tell', WELCOME_MESSAGE); 
     }
 };
-
-module.exports = { handlers };
