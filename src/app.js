@@ -1,8 +1,5 @@
 const Alexa = require('alexa-sdk');
 
-const WELCOME_MESSAGE = `Welcome to High Low guessing game. You have played ${
-    this.attributes.gamesPlayed.toString()} times. would you like to play?`;
-
 const states = {
     GUESSMODE: '_GUESSMODE', // User is trying to guess the number.
     STARTMODE: '_STARTMODE'  // Prompt the user to start or restart the game.
@@ -15,7 +12,8 @@ module.exports.newSessionHandlers = {
             this.attributes.gamesPlayed = 0;
         }
         this.handler.state = states.STARTMODE;
-        this.emit(':ask', WELCOME_MESSAGE,
+        this.emit(':ask', `Welcome to High Low guessing game. You have played ${
+             this.attributes.gamesPlayed.toString()} times. would you like to play?`,
             'Say yes to start the game or no to quit.');
     },
     'AMAZON.StopIntent': function () {
