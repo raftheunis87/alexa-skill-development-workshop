@@ -1,0 +1,7 @@
+{
+  "extends": "rallycoding",
+  "rules": {
+    "max-len": ["error", 500],
+    "no-underscore-dangle": ["error", { "allowAfterThis": true }]
+  }
+}
