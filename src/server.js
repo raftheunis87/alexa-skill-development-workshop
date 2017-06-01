@@ -4,7 +4,7 @@ const Alexa = require('alexa-sdk');
 const bodyParser = require('body-parser');
 const express = require('express');
 
-const handlers = require('./app');
+const handlers = require('./app2');
 
 const port = process.env.PORT || 3000;
 
@@ -26,7 +26,7 @@ server.post('/', (req, res) => {
 
     // Initialize Alexa SDK
     const alexa = Alexa.handler(req.body, context);
-    alexa.registerHandlers(handlers.newSessionHandlers, handlers.startGameHandlers, handlers.guessModeHandlers, handlers.guessAttemptHandlers);
+    alexa.registerHandlers(handlers.handlers, handlers.startModeHandlers, handlers.guessModeHandlers, handlers.guessAttemptHandlers);
     alexa.execute();
 });
 
