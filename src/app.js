@@ -1,42 +1,34 @@
 const Alexa = require('alexa-sdk');
 
+const EXIT_SKILL_MESSAGE = 'Thank you for playing this game! Hope to see you again soon!';
+
 const states = {
     GUESSMODE: '_GUESSMODE', // User is trying to guess the number.
     STARTMODE: '_STARTMODE'  // Prompt the user to start or restart the game.
 };
 
-module.exports.newSessionHandlers = {
-    NewSession() {
+const speech = '';
+
+module.exports.handlers = {
+    LaunchRequest() {
+        // prepare session variables
         if (Object.keys(this.attributes).length === 0) {
             this.attributes.endedSessionCount = 0;
             this.attributes.gamesPlayed = 0;
         }
         this.handler.state = states.STARTMODE;
-        this.emit(':ask', `Welcome to High Low guessing game. You have played ${
-             this.attributes.gamesPlayed.toString()} times. would you like to play?`,
-            'Say yes to start the game or no to quit.');
-    },
-    'AMAZON.StopIntent': function () {
-        this.emit(':tell', 'Goodbye!');
-    },
-    'AMAZON.CancelIntent': function () {
-        this.emit(':tell', 'Goodbye!');
+        this.emitWithState('Start');
     },
     SessionEndedRequest() {
-        console.log('session ended!');
-        //this.attributes['endedSessionCount'] += 1;
-        this.emit(':tell', 'Goodbye!');
+        this.emit(':tell', EXIT_SKILL_MESSAGE);
     }
 };
 
-module.exports.startGameHandlers = Alexa.CreateStateHandler(states.STARTMODE, {
-    NewSession() {
-        this.emit('NewSession'); // Uses the handler in newSessionHandlers
-    },
-    'AMAZON.HelpIntent': function () {
-        const message = 'I will think of a number between zero and one hundred, try to guess and I will tell you if it' +
-            ' is higher or lower. Do you want to start the game?';
-        this.emit(':ask', message, message);
+module.exports.startModeHandlers = Alexa.CreateStateHandler(states.STARTMODE, {
+    Start() {
+        this.emit(':ask', `Welcome to High Low guessing game. You have played ${
+            this.attributes.gamesPlayed.toString()} times. would you like to play?`,
+            'Say yes to start the game or no to quit.');
     },
     'AMAZON.YesIntent': function () {
         this.attributes.guessNumber = Math.floor(Math.random() * 100);
@@ -47,26 +39,23 @@ module.exports.startGameHandlers = Alexa.CreateStateHandler(states.STARTMODE, {
         this.emit(':tell', 'Ok, see you next time!');
     },
     'AMAZON.StopIntent': function () {
-        this.emit(':tell', 'Goodbye!');
+        this.emit(':tell', EXIT_SKILL_MESSAGE);
     },
     'AMAZON.CancelIntent': function () {
-        this.emit(':tell', 'Goodbye!');
+        this.emit(':tell', EXIT_SKILL_MESSAGE);
+    },
+    'AMAZON.HelpIntent': function () {
+        this.emit(':ask', 'Say yes to start the game or no to quit.', 'Say yes to start the game or no to quit.');
     },
     SessionEndedRequest() {
-        //this.attributes['endedSessionCount'] += 1;
-        this.emit(':tell', 'Goodbye!');
+        this.emit(':tell', EXIT_SKILL_MESSAGE);
     },
     Unhandled() {
-        const message = 'Say yes to continue, or no to end the game.';
-        this.emit(':ask', message, message);
+        this.emitWithState('Start');
     }
 });
 
 module.exports.guessModeHandlers = Alexa.CreateStateHandler(states.GUESSMODE, {
-    NewSession() {
-        this.handler.state = '';
-        this.emitWithState('NewSession'); // Equivalent to the Start Mode NewSession handler
-    },
     NumberGuessIntent() {
         const guessNum = parseInt(this.event.request.intent.slots.number.value, 10);
         const targetNum = this.attributes.guessNumber;
@@ -98,9 +87,8 @@ module.exports.guessModeHandlers = Alexa.CreateStateHandler(states.GUESSMODE, {
         console.log('CANCELINTENT');
     },
     SessionEndedRequest() {
-        console.log('SESSIONENDEDREQUEST');
-        this.attributes.endedSessionCount += 1;
-        this.emit(':tell', 'Goodbye!');
+        this.attributes.endedSessionCount++;
+        this.emit(':tell', EXIT_SKILL_MESSAGE);
     },
     Unhandled() {
         console.log('UNHANDLED');
@@ -125,3 +113,4 @@ module.exports.guessAttemptHandlers = {
         this.emit(':ask', 'Sorry, I didn\'t get that. Try saying a number.', 'Try saying a number.');
     }
 };
+

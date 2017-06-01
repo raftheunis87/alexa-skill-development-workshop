@@ -4,7 +4,7 @@ const Alexa = require('alexa-sdk');
 const bodyParser = require('body-parser');
 const express = require('express');
 
-const handlers = require('./app2');
+const handlers = require('./app');
 
 const port = process.env.PORT || 3000;
 
