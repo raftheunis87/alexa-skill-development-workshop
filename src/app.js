@@ -7,8 +7,6 @@ const states = {
     STARTMODE: '_STARTMODE'  // Prompt the user to start or restart the game.
 };
 
-const speech = '';
-
 module.exports.handlers = {
     LaunchRequest() {
         // prepare session variables
